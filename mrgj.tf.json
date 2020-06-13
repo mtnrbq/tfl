@@ -1,0 +1,169 @@
+[
+  {
+    "provider": {
+      "azurerm": {
+        "version": "=2.0.0",
+        "features": {}
+      }
+    },
+    "resource": [
+      {
+        "azurerm_resource_group": {
+          "rg": {
+            "name": "mytfjrg",
+            "location": "australiaeast",
+            "tags": {
+              "Environment": "Terraform Getting Started",
+              "Team": "DevOps"
+            }
+          }
+        }
+      },
+      {
+        "azurerm_virtual_network": {
+          "vnet": {
+            "name": "myTFVnet",
+            "address_space": [
+              "10.0.0.0/24",
+              "10.0.1.0/24"
+            ],
+            "location": "${azurerm_resource_group.rg.location}",
+            "resource_group_name": "${azurerm_resource_group.rg.name}"
+          }
+        }
+      },
+      {
+        "azurerm_subnet": {
+          "azurerm_subnet": {
+            "name": "myTFSubnet",
+            "resource_group_name": "${azurerm_resource_group.rg.name}",
+            "virtual_network_name": "${azurerm_virtual_network.vnet.name}",
+            "address_prefix": "10.0.0.0/24"
+          }
+        }
+      },
+      {
+        "azurerm_subnet": {
+          "azb_subnet": {
+            "name": "AzureBastionSubnet",
+            "resource_group_name": "${azurerm_resource_group.rg.name}",
+            "virtual_network_name": "${azurerm_virtual_network.vnet.name}",
+            "address_prefix": "10.0.1.0/27"
+          }
+        }
+      },
+      {
+        "azurerm_public_ip": {
+          "bastionip": {
+            "name": "myTFPublicIP",
+            "location": "${azurerm_resource_group.rg.location}",
+            "resource_group_name": "${azurerm_resource_group.rg.name}",
+            "allocation_method": "Static",
+            "sku":"Standard"
+          }
+        }
+      },
+      {
+        "azurerm_network_security_group": {
+          "nsg": {
+            "name": "myTFNSG",
+            "location": "${azurerm_resource_group.rg.location}",
+            "resource_group_name": "${azurerm_resource_group.rg.name}",
+            "security_rule": [
+              {
+                "description": "Allow SSH",
+                "name": "SSH",
+                "priority": 1001,
+                "direction": "Inbound",
+                "access": "Allow",
+                "protocol": "Tcp",
+                "source_port_ranges": ["0-65535"],
+                "destination_port_ranges": [
+                  "22"
+                ],
+                "source_address_prefixes": null,
+                "destination_address_prefixes": null,
+                "destination_application_security_group_ids": null,
+                "source_application_security_group_ids": null,
+                "source_port_range": null,
+                "destination_port_range": null,
+                "source_address_prefix": "*",
+                "destination_address_prefix": "*"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "azurerm_network_interface": {
+          "nic": {
+            "name": "myNIC",
+            "location": "${azurerm_resource_group.rg.location}",
+            "resource_group_name": "${azurerm_resource_group.rg.name}",
+            "ip_configuration": {
+              "name": "myNICConfg",
+              "subnet_id": "${azurerm_subnet.azurerm_subnet.id}",
+              "private_ip_address_allocation": "dynamic",
+              "public_ip_address_id": null
+            }
+          }
+        }
+      },
+      {
+        "azurerm_network_interface_security_group_association": {
+          "nicnsg": {
+            "network_interface_id": "${azurerm_network_interface.nic.id}",
+            "network_security_group_id": "${azurerm_network_security_group.nsg.id}"
+          }
+        }
+      },
+      {
+        "azurerm_virtual_machine": {
+          "vm": {
+            "name": "myTFVM",
+            "location": "${azurerm_resource_group.rg.location}",
+            "resource_group_name": "${azurerm_resource_group.rg.name}",
+            "network_interface_ids": [
+              "${azurerm_network_interface.nic.id}"
+            ],
+            "vm_size": "Standard_DS1_v2",
+            "storage_os_disk": {
+              "name": "myOsDisk",
+              "caching": "ReadWrite",
+              "create_option": "FromImage",
+              "managed_disk_type": "Premium_LRS"
+            },
+            "storage_image_reference": {
+              "publisher": "Canonical",
+              "offer": "UbuntuServer",
+              "sku": "18.04-LTS",
+              "version": "latest"
+            },
+            "os_profile": {
+              "computer_name": "myTFVM",
+              "admin_username": "plankton",
+              "admin_password": "3842d424-c318-41ed-806b-57e10a29807c"
+            },
+            "os_profile_linux_config": {
+              "disable_password_authentication": false
+            }
+          }
+        }
+      },
+      {
+        "azurerm_bastion_host": {
+          "bastion": {
+            "name": "examplebastion",
+            "location": "${azurerm_resource_group.rg.location}",
+            "resource_group_name": "${azurerm_resource_group.rg.name}",
+            "ip_configuration": {
+              "name": "configuration",
+              "subnet_id": "${azurerm_subnet.azb_subnet.id}",
+              "public_ip_address_id": "${azurerm_public_ip.bastionip.id}"
+            }
+          }
+        }
+      }
+    ]
+  }
+]
