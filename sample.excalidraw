@@ -1,0 +1,50 @@
+{
+  "type": "excalidraw",
+  "version": 1,
+  "source": "http://localhost:51494",
+  "elements": [
+    {
+      "id": "SL6yOmCwuigRNap5fTMCW",
+      "type": "rectangle",
+      "x": 317.5,
+      "y": 162,
+      "width": 235,
+      "height": 101,
+      "angle": 0,
+      "strokeColor": "#364fc7",
+      "backgroundColor": "#fa5252",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 60,
+      "seed": 1187464883,
+      "version": 63,
+      "versionNonce": 1852757267,
+      "isDeleted": false
+    },
+    {
+      "id": "wF4Pbv8sRhQCd370M5w9T",
+      "type": "rectangle",
+      "x": 393,
+      "y": 102,
+      "width": 235,
+      "height": 101,
+      "angle": 0,
+      "strokeColor": "#364fc7",
+      "backgroundColor": "#fa5252",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 60,
+      "seed": 311999155,
+      "version": 112,
+      "versionNonce": 569287507,
+      "isDeleted": false
+    }
+  ],
+  "appState": {
+    "viewBackgroundColor": "#e7f5ff"
+  }
+}
